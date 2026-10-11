@@ -14,3 +14,4 @@
 - Use the shared CrowdSafe context with validated browser storage for demo incidents; the application intentionally has no backend.
 - Each operations section has a TanStack file route and page metadata; the root shell supplies shared navigation and session state.
 - Compute route distances from the displayed waypoint polyline and exclude blocked edges from the route graph.
+- Pre-bundle React and lazy map/chart dependencies in Vite so first-time navigation does not introduce mixed optimized React module generations.
