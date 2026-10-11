@@ -5,10 +5,10 @@ import 'leaflet/dist/leaflet.css';
 import { LocateFixed, Maximize2, Minimize2, Layers, MapPin, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { center, zones, facilities, corridors, nodes, riskLabels, incidentPosition, type Incident, type Position } from './data';
-export type MapProps={incidents:Incident[];focus?:Position;filter?:string;route?:Position[];blocked?:string[];large?:boolean};
+export type MapProps={incidents:Incident[];focus?:Position|undefined;filter?:string|undefined;route?:Position[]|undefined;blocked?:string[]|undefined;large?:boolean|undefined};
 const zoneIcon=(risk:string)=>L.divIcon({className:'site-marker',html:`<span class="zone-pin ${risk}"><span></span></span>`,iconSize:[22,22],iconAnchor:[11,11]});
 const facilityIcon=(type:string)=>L.divIcon({className:'site-marker',html:`<span class="facility-pin ${type.toLowerCase()}">${type==='Medical'?'+':type==='Ambulance'?'A':type==='Exit'?'↗':'⚑'}</span>`,iconSize:[28,28],iconAnchor:[14,14]});
-function MapActions({focus,reset,expanded}:{focus?:Position;reset:number;expanded:boolean}){const map=useMap();useEffect(()=>{map.invalidateSize();},[expanded,map]);useEffect(()=>{if(focus)map.flyTo(focus,18,{duration:.6});},[focus,map]);useEffect(()=>{if(reset>0)map.setView(center,16);},[reset,map]);return null;}
+function MapActions({focus,reset,expanded}:{focus?:Position|undefined;reset:number;expanded:boolean}){const map=useMap();useEffect(()=>{map.invalidateSize();},[expanded,map]);useEffect(()=>{if(focus)map.flyTo(focus,18,{duration:.6});},[focus,map]);useEffect(()=>{if(reset>0)map.setView(center,16);},[reset,map]);return null;}
 export default function SiteMap({incidents,focus,filter:externalFilter,route,blocked=[],large}:MapProps){
  const [filter,setFilter]=useState('all'); const [reset,setReset]=useState(0); const [expanded,setExpanded]=useState(false); const [tileError,setTileError]=useState(false); const active=externalFilter??filter;
  return <div className={`gis-map ${large?'large-map':''} ${expanded?'expanded-map':''}`}>
@@ -21,7 +21,7 @@ export default function SiteMap({incidents,focus,filter:externalFilter,route,blo
  {route&&<Polyline positions={route} pathOptions={{color:'var(--primary)',weight:6,opacity:.95}}><Tooltip permanent>DEMONSTRATION ROUTE</Tooltip></Polyline>}
  <ZoomControl position="bottomright"/><MapActions focus={focus} reset={reset} expanded={expanded}/>
  </MapContainer>
- <div className="map-top-controls"><div className="map-demo"><span className="status-dot"/>SIMULATED SITE MAP</div>{!externalFilter&&<div className="map-filters">{[['all','All zones'],['high','High risk'],['medical','Medical']].map(([value,label])=><Button key={value} variant="ghost" size="sm" className={active===value?'selected':''} onClick={()=>setFilter(value)}>{value==='medical'&&<Plus/>}{label}</Button>)}</div>}</div>
+ <div className="map-top-controls"><div className="map-demo"><span className="status-dot"/>SIMULATED SITE MAP</div>{!externalFilter&&<div className="map-filters">{([['all','All zones'],['high','High risk'],['medical','Medical']] as const).map(([value,label])=><Button key={value} variant="ghost" size="sm" className={active===value?'selected':''} onClick={()=>setFilter(value)}>{value==='medical'&&<Plus/>}{label}</Button>)}</div>}</div>
  <div className="map-right-controls"><Button variant="outline" size="icon" title="Reset map view" aria-label="Reset map view" onClick={()=>setReset(n=>n+1)}><LocateFixed/></Button><Button variant="outline" size="icon" title={expanded?'Close expanded map':'Expand map'} aria-label={expanded?'Close expanded map':'Expand map'} onClick={()=>setExpanded(!expanded)}>{expanded?<Minimize2/>:<Maximize2/>}</Button></div>
  <div className="map-legend"><span><i className="legend-dot normal"/>Normal</span><span><i className="legend-dot moderate"/>Moderate</span><span><i className="legend-dot high"/>High risk</span><span className="legend-medical"><Plus size={13}/>Medical</span></div>
  {tileError&&<div className="tile-error">Some map tiles are unavailable. Simulated site markers remain interactive.</div>}
