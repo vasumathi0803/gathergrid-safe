@@ -1,6 +1,6 @@
 # CrowdSafe
-- [ ] Build operations design system and dashboard navigation
-- [ ] Implement interactive GIS map and simulated site data
-- [ ] Add persistent incident reports and facility filters
-- [ ] Add evacuation planning, analytics, and settings
-- [ ] Add photographs, documentation, and verify interactions
+- [x] Build operations design system and dashboard navigation
+- [x] Implement interactive GIS map and simulated site data
+- [x] Add persistent incident reports and facility filters
+- [x] Add evacuation planning, analytics, and settings
+- [x] Add photographs, documentation, and verify interactions
